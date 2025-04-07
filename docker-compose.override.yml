@@ -1,0 +1,14 @@
+services:
+  prestart:
+    environment:
+      - HOST_BACKEND=0.0.0.0
+      - POSTGRES_SERVER=db
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379
+
+  backend:
+    environment:
+      - HOST_BACKEND=0.0.0.0
+      - POSTGRES_SERVER=db
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379

@@ -145,3 +145,15 @@ python -m app.main
 pre-commit install
 pre-commit run
 ```
+# Локальная разработка (С Docker)
+
+1) Скачать docker
+2) Запустить команду
+в ручную
+```bash
+docker-compose up -d --build
+```
+через скрипт
+```bash
+scripts.\build.sh
+```

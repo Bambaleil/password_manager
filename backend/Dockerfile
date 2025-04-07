@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye AS builder
+FROM python:3.12-slim-bullseye AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN python -m pip install --no-cache-dir poetry==2.1.1 && \
     poetry install --no-interaction --no-ansi --no-root && \
     rm -rf $(poetry config cache-dir)/{cache,artifacts}
 
-FROM python:3.10-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 WORKDIR /app
 ENV PATH="/app/.venv/bin:$PATH"
