@@ -2,6 +2,7 @@ from datetime import timedelta, timezone, datetime
 from typing import Any
 
 import jwt
+from cryptography.fernet import Fernet
 from passlib.context import CryptContext
 
 from app.core.config import settings
@@ -9,6 +10,9 @@ from app.core.config import settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ALGORITHM = "HS256"
+
+KEY = settings.FERNET_KEY
+fernet = Fernet(KEY.encode())
 
 
 def create_access_token(subject: str | Any, expires_delta: timedelta) -> str:
@@ -24,3 +28,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+
+def encrypt_password(password: str) -> str:
+    return fernet.encrypt(password.encode()).decode()
+
+
+def decrypt_password(token: str) -> str:
+    return fernet.decrypt(token.encode()).decode()

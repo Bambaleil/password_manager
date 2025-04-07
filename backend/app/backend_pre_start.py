@@ -1,5 +1,4 @@
 import logging
-
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
 from sqlmodel import select
 from tenacity import (
@@ -10,7 +9,6 @@ from tenacity import (
     stop_after_delay,
     wait_fixed,
 )
-
 from app.core.db import async_engine
 
 logging.basicConfig(level=logging.INFO)
@@ -22,27 +20,24 @@ wait_second = 1
 
 
 @retry(
-    stop=(
-            stop_after_attempt(max_attempt_number=attempt)
-            | stop_after_delay(max_delay=max_tries)
-    ),
-    wait=wait_fixed(wait=wait_second),
-    before=before_log(logger=logger, log_level=logging.INFO),
-    after=after_log(logger=logger, log_level=logging.DEBUG),
+    stop=(stop_after_attempt(attempt) | stop_after_delay(max_tries)),
+    wait=wait_fixed(wait_second),
+    before=before_log(logger, logging.INFO),
+    after=after_log(logger, logging.DEBUG),
 )
-async def init(async_engine: AsyncEngine) -> None:
+async def wait_for_db(engine: AsyncEngine) -> None:
     try:
-        async with AsyncSession(async_engine) as as_session:
-            await as_session.execute(select(1))
+        async with AsyncSession(engine) as session:
+            await session.execute(select(1))
     except Exception as e:
-        logger.error(e)
-        raise e
+        logger.error("Database not ready: %s", e)
+        raise
 
 
 async def main() -> None:
-    logger.info("Initializing service")
-    await init(async_engine)
-    logger.info("Service finished initializing")
+    logger.info("Waiting for the database to become available...")
+    await wait_for_db(async_engine)
+    logger.info("Database is available!")
 
 
 if __name__ == "__main__":

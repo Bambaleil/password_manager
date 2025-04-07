@@ -15,9 +15,9 @@ async def init() -> None:
 
 
 async def main() -> None:
-    logger.info("Creating initial data")
+    logger.info("Creating initial database schema...")
     await init()
-    logger.info("Initial data created")
+    logger.info("Database schema created successfully.")
 
 
 if __name__ == "__main__":

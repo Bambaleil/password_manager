@@ -9,7 +9,7 @@ from sqlmodel import delete
 
 from app.core.db import async_engine
 from app.main import app
-from app.models import User
+from app.models import Password
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -20,7 +20,7 @@ async def db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSession(async_engine) as as_session:
         yield as_session
         async with AsyncSession(async_engine) as cleanup_session:
-            await cleanup_session.execute(delete(User))
+            await cleanup_session.execute(delete(Password))
             await cleanup_session.commit()
 
 

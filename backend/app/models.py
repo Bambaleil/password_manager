@@ -14,8 +14,15 @@ class PasswordResponse(PasswordBase):
     password: str
 
 
-class Password(PasswordBase, table=True):
-    __tablename__ = 'passwords'
+class PasswordsResponse(SQLModel):
+    data: list[PasswordResponse]
+    count: int
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
-    hashed_password: str = Field(nullable=False)
+
+class Password(PasswordBase, table=True):  # type: ignore
+    __tablename__ = "passwords"
+
+    id: uuid.UUID = Field(
+        default_factory=uuid.uuid4, primary_key=True, index=True
+    )
+    encrypted_password: str = Field(nullable=False)

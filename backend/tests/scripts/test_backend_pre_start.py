@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend_pre_start import init, logger
+from app.backend_pre_start import wait_for_db, logger
 
 
 @pytest.mark.asyncio(loop_scope="session")
@@ -25,7 +25,7 @@ async def test_init_successful_connection() -> None:
         patch.object(logger, "warn"),
     ):
         try:
-            await init(as_engine_mock)
+            await wait_for_db(as_engine_mock)
             connection_successful = True
         except Exception as error:
             logger.error(error)

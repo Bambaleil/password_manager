@@ -1,5 +1,7 @@
 import secrets
 from pathlib import Path
+
+from cryptography.fernet import Fernet
 from pydantic import PostgresDsn, RedisDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,6 +19,7 @@ class Settings(BaseSettings):
     PORT_BACKEND: int = 8000
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    FERNET_KEY: str = Fernet.generate_key().decode()
     API_V1_STR: str = "/api/v1"
 
     POSTGRES_SERVER: str = ""
