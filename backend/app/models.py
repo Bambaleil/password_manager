@@ -26,3 +26,8 @@ class Password(PasswordBase, table=True):  # type: ignore
         default_factory=uuid.uuid4, primary_key=True, index=True
     )
     encrypted_password: str = Field(nullable=False)
+
+
+class PasswordTestData(SQLModel):
+    service_name: str
+    password: str
