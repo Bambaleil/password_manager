@@ -15,7 +15,4 @@ docker-compose build --no-cache
 echo "Запускаем контейнеры..."
 docker-compose up -d
 
-echo "Удаляем контейнер prestart"
-docker-compose run --rm prestart
-
 echo "Готово!"

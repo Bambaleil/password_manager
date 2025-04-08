@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi_cache.decorator import cache
 
 from app.api.deps import AsSessionDep
 from app.core.security import decrypt_password
@@ -10,6 +11,7 @@ from app.crud import (
     update_password,
     search_passwords_by_service_name,
 )
+
 from app.models import PasswordCreate, PasswordResponse, PasswordsResponse
 
 router = APIRouter()
@@ -44,6 +46,7 @@ async def create_or_update_password(
 
 
 @router.get("/{service_name}", response_model=PasswordResponse)
+@cache(expire=60)
 async def get_password(
     service_name: str,
     session: AsSessionDep,
@@ -61,8 +64,9 @@ async def get_password(
 
 
 @router.get("/", response_model=PasswordsResponse)
+@cache(expire=60)
 async def get_passwords(
-    service_name: str, session: AsSessionDep, skip: int = 0, limit: int = 0
+    service_name: str, session: AsSessionDep, skip: int = 0, limit: int = 10
 ):
     results, count = await search_passwords_by_service_name(
         session=session, service_name=service_name, skip=skip, limit=limit
