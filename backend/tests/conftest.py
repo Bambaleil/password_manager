@@ -2,6 +2,7 @@ import asyncio
 import sys
 from collections.abc import AsyncGenerator
 
+import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,7 +10,8 @@ from sqlmodel import delete
 
 from app.core.db import async_engine
 from app.main import app
-from app.models import Password
+from app.models import Password, PasswordTestData  # type: ignore
+from tests.factories.password_data_factory import PasswordDataFactory
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -30,3 +32,16 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
         transport=ASGITransport(app=app), base_url="http://testserver"
     ) as as_client:
         yield as_client
+
+
+@pytest.fixture(scope="session")
+def password_data_factory() -> PasswordDataFactory:
+    return PasswordDataFactory()
+
+
+@pytest.fixture
+def password_data(
+    password_data_factory: PasswordDataFactory,
+) -> PasswordTestData:
+    """Возвращает поддельные данные для пароля."""
+    return password_data_factory()
