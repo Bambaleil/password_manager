@@ -33,7 +33,7 @@ async def create_password(
 async def update_password(
     session: AsyncSession, db_password: Password, new_password: str
 ) -> Password:
-    db_password.hashed_password = encrypt_password(new_password)
+    db_password.encrypted_password = encrypt_password(new_password)
     session.add(db_password)
     await session.commit()
     await session.refresh(db_password)
