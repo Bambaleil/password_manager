@@ -4,6 +4,8 @@ from collections.abc import AsyncGenerator
 
 import pytest
 import pytest_asyncio
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import delete
@@ -44,3 +46,8 @@ def password_data(
     password_data_factory: PasswordDataFactory,
 ) -> PasswordTestData:
     return password_data_factory()
+
+
+@pytest.fixture(autouse=True)
+async def initialize_cache():
+    FastAPICache.init(InMemoryBackend())
