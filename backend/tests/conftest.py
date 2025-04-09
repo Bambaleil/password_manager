@@ -43,5 +43,4 @@ def password_data_factory() -> PasswordDataFactory:
 def password_data(
     password_data_factory: PasswordDataFactory,
 ) -> PasswordTestData:
-    """Возвращает поддельные данные для пароля."""
     return password_data_factory()
