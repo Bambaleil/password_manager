@@ -21,7 +21,7 @@ ENV PYTHONPATH=/app
 COPY --from=builder /app /app
 COPY . /app
 
-RUN apt-get update && apt-get install -y dos2unix && \
+RUN apt-get update && apt-get install -y curl dos2unix && \
     find /app -type f -name "*.sh" -exec dos2unix {} + && \
     find /app -type f -name "*.py" -exec dos2unix {} +
 
