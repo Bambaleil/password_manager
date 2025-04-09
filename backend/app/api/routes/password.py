@@ -1,6 +1,4 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi_cache.decorator import cache
 
 from app.api.deps import AsSessionDep
@@ -11,7 +9,6 @@ from app.crud import (
     update_password,
     search_passwords_by_service_name,
 )
-
 from app.models import PasswordCreate, PasswordResponse, PasswordsResponse
 
 router = APIRouter()
@@ -20,7 +17,7 @@ router = APIRouter()
 @router.post("/{service_name}", response_model=PasswordResponse)
 async def create_or_update_password(
     service_name: str,
-    password_data: Annotated[PasswordCreate, Depends()],
+    password_data: PasswordCreate,
     session: AsSessionDep,
 ) -> PasswordResponse:
     existing = await get_password_by_service_name(
