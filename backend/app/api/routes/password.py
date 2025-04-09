@@ -20,6 +20,13 @@ async def create_or_update_password(
     password_data: PasswordCreate,
     session: AsSessionDep,
 ) -> PasswordResponse:
+    """
+    "Creates or updates a service password with encrypted storage."
+    :param service_name: Name of the service
+    :param password_data: Password data
+    :param session: Database session dependency
+    :return: Password response with service name and password
+    """
     existing = await get_password_by_service_name(
         session=session, service_name=service_name
     )
@@ -48,6 +55,13 @@ async def get_password(
     service_name: str,
     session: AsSessionDep,
 ) -> PasswordResponse:
+    """
+    "Retrieves a decrypted password for specified service."
+    :param service_name: Name of the service
+    :param session: Database session dependency
+    :return: Password response with service name and decrypted password
+    :raises HTTPException: 400 if service not found
+    """
     existing = await get_password_by_service_name(
         session=session, service_name=service_name
     )
@@ -65,6 +79,14 @@ async def get_password(
 async def get_passwords(
     service_name: str, session: AsSessionDep, skip: int = 0, limit: int = 10
 ):
+    """
+    Searches passwords with pagination and caching support.
+    :param service_name: Service name
+    :param session: Database session
+    :param skip: Number of items to skip
+    :param limit: Maximum number of items to return
+    :return: Passwords response with list of passwords and total count
+    """
     results, count = await search_passwords_by_service_name(
         session=session, service_name=service_name, skip=skip, limit=limit
     )
