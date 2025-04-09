@@ -4,9 +4,9 @@ services:
     container_name: setting_server
     build:
       context: backend
-    #    depends_on:
-    #      db:
-    #        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     command: >
       /bin/bash -c "
       bash scripts/prestart.sh &&
@@ -31,9 +31,9 @@ services:
     build:
       context: backend
     restart: unless-stopped
-    #    depends_on:
-    #      db:
-    #        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -47,6 +47,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   db:
     container_name: postgres_db
@@ -66,7 +72,7 @@ services:
       - "5432:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
-      interval: 30s
+      interval: 10s
       timeout: 10s
       retries: 5
     tty: true
